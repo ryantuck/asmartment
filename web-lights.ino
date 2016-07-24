@@ -1,9 +1,9 @@
 #include "FastLED/FastLED.h"
 FASTLED_USING_NAMESPACE;
 
-#define NUM_LEDS 16
-#define DATA_PIN 3
-#define CLOCK_PIN 13
+#define NUM_LEDS 72
+#define DATA_PIN 5
+#define CLOCK_PIN 0
 
 CRGB leds[NUM_LEDS];
 
@@ -21,32 +21,52 @@ public:
     CRGB color;
     int idx;
     int colorIdx;
+    bool allOn;
 
     Strip() {
         idx = 0;
         colorIdx = 0;
         color = CRGB::White;
-        }
+        allOn = true;
+    }
 
     void updateColor() {
         // update color index and set color from there
         colorIdx = (colorIdx + 1) % 4;
         color = colors[colorIdx];
-        }
+    }
 
     void setColor(int setIdx) {
         // update color index and set color from there
         color = colors[setIdx];
-        }
+    }
+
+    void toggleAllOn() {
+
+        allOn = !allOn;
+    }
 
     void iterate() {
 
-        leds[idx] = color;
-        FastLED.show();
-        delay(100);
-        leds[idx] = CRGB::Black;
-        idx = (idx + 1) % NUM_LEDS;
+        if (allOn) {
+
+            for (int i=0; i< NUM_LEDS; i++) {
+                leds[i] = color;
+            }
+            FastLED.show();
+            delay(100);
+            for (int i=0; i< NUM_LEDS; i++) {
+                leds[i] = CRGB::Black;
+            }
         }
+        else {
+            leds[idx] = color;
+            FastLED.show();
+            delay(50);
+            leds[idx] = CRGB::Black;
+            idx = (idx + 1) % NUM_LEDS;
+        }
+    }
 };
 
 Strip strip = Strip();
@@ -54,7 +74,8 @@ Strip strip = Strip();
 void setup() {
     delay(2000);
     FastLED.addLeds<LPD8806, DATA_PIN, CLOCK_PIN, BRG>(leds, NUM_LEDS);
-    Spark.function("cc",toggle);
+    Particle.function("cc",toggle);
+    Particle.function("on",all);
 }
 
 void loop() {
@@ -85,6 +106,23 @@ int toggle(String command) {
         return -1;
     }
 }
+
+int all(String command) {
+
+    if (command == "allOn") {
+        strip.toggleAllOn();
+        return 1;
+    }
+    else if (command == "off") {
+        strip.toggleAllOn();
+        return 0;
+    }
+    else {
+        return -1;
+    }
+
+}
+
 
 
 
