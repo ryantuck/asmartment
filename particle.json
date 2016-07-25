@@ -1,0 +1,12 @@
+{
+    "devices": {
+        "lux": {
+            "id": "3b0023001247343339383037"
+        },
+        "strip": {
+            "id": "2b0023000347343337373739"
+        }
+    },
+    "access_token": "26e4b7814fd17239de6b3c4fb0bbdb5f371284fc",
+    "base_url": "https://api.particle.io/v1/devices"
+}
