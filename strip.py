@@ -2,7 +2,7 @@ import particle
 
 x = particle.post(
     device_name='lux',
-    function_name='cc',
+    function_name='mode',
     command='green',
 )
 

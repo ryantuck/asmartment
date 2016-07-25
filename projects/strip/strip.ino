@@ -19,13 +19,17 @@ class Strip {
 public:
 
     CRGB color;
-    int idx;
+    int redIdx;
+    int blueIdx;
+    int greenIdx;
     int colorIdx;
 //    bool allOn;
     int mode = 1;
 
     Strip() {
-        idx = 0;
+        redIdx = rand() % NUM_LEDS;
+        greenIdx = rand() % NUM_LEDS;
+        blueIdx = rand() % NUM_LEDS;
         colorIdx = 0;
         color = CRGB::Blue;
 //        allOn = false;
@@ -61,17 +65,29 @@ public:
 //            }
         } else if (mode == 1) {
             // random walk of particle
-            leds[idx] = color;
+            //leds[idx] = color;
+
+            leds[redIdx] = CRGB::Red;
+            leds[greenIdx] = CRGB::Green;
+            leds[blueIdx] = CRGB::Blue;
+
             FastLED.show();
             delay(50);
-            leds[idx] = CRGB::Black;
-            idx = getNeighbor(idx);
+
+            leds[redIdx] = CRGB::Black;
+            leds[greenIdx] = CRGB::Black;
+            leds[blueIdx] = CRGB::Black;
+
+            redIdx = getNeighbor(redIdx);
+            greenIdx = getNeighbor(greenIdx);
+            blueIdx = getNeighbor(blueIdx);
+
         } else {
-            leds[idx] = color;
-            FastLED.show();
-            delay(50);
-            leds[idx] = CRGB::Black;
-            idx = (idx + 1) % NUM_LEDS;
+//            leds[idx] = color;
+//            FastLED.show();
+//            delay(50);
+//            leds[idx] = CRGB::Black;
+//            idx = (idx + 1) % NUM_LEDS;
         }
     }
 };
@@ -158,7 +174,7 @@ int getNeighbor(int currentIdx) {
     if (y % 2 == 0) {
         x = currentIdx % 18;
     } else {
-        x = 18 - currentIdx % 18;
+        x = 18 - currentIdx % 18 - 1;
     }
 
     bool up = true;

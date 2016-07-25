@@ -9,13 +9,16 @@ int main() {
 
     int idx = 0;
 
-    while (true) {
+    bool cool = true;
+
+    while (cool) {
 
         int newIdx = getNeighbor(idx);
 
         cout << "--------------\n";
         idx = newIdx;
-        sleep(1);
+        usleep(1000);
+        if (idx > 323 | idx < 0) { cool = false; }
     }
 
     return 0;
@@ -79,7 +82,7 @@ int getNeighbor(int currentIdx) {
     if (y % 2 == 0) {
         newIdx = 18*y + x;
     } else {
-        newIdx = 18*(y+1) - x;
+        newIdx = 18*(y+1) - x - 1;
     }
 
     cout << "new idx: " << newIdx << "\n";
