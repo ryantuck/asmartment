@@ -16,6 +16,9 @@ CRGB colors[6] = {
     CRGB(255,0,255)
 };
 
+
+CRGB tungsten = CRGB(255, 214, 170);
+
 class Led {
 
 public:
@@ -29,6 +32,7 @@ public:
     }
 };
 
+
 class Grid {
 
 public:
@@ -36,6 +40,9 @@ public:
     Led pixels[6];
 
     int mode = 0;
+    int all_count = 10;
+
+    CRGB color = CRGB::Yellow;
 
     Grid() {
 
@@ -48,22 +55,32 @@ public:
         mode = x;
     }
 
+    void refresh() {
+        for (int i=0; i<NUM_LEDS; i++) {
+            leds[i] = CRGB::Black;
+        }
+    }
+
     void iterate() {
+
+        refresh();
 
         if (mode == 0) {
 
             for (int i=0; i<6; i++) {
                 leds[pixels[i].idx] = pixels[i].color;
+                pixels[i].idx = getNeighbor(pixels[i].idx);
             }
-
             FastLED.show();
             delay(50);
 
-            for (int i=0; i<6; i++) {
-                leds[pixels[i].idx] = CRGB::Black;
-
-                pixels[i].idx = getNeighbor(pixels[i].idx);
+        }
+        else if (mode == 1) {
+            for (int i=0; i<all_count; i++) {
+                leds[i] = color;
             }
+            FastLED.show();
+            delay(100);
         }
     }
 };
@@ -74,6 +91,8 @@ void setup() {
     delay(1000);
     FastLED.addLeds<LPD8806, DATA_PIN, CLOCK_PIN, BRG>(leds, NUM_LEDS);
     Particle.function("set_mode", setGridMode);
+    Particle.function("set_num", setGridNum);
+    Particle.function("set_color", setGridColor);
 }
 
 void loop() {
@@ -87,9 +106,44 @@ int setGridMode(String command) {
     if (command == "random walk") {
         grid.setMode(0);
         return 0;
-    } else if (command == "line") {
+    } else if (command == "all on") {
         grid.setMode(1);
         return 1;
+    } else {
+        return -1;
+    }
+}
+
+
+int setGridNum(String command) {
+    if (command == "100") {
+        grid.all_count = 100;
+        return 100;
+    } else if (command == "200") {
+        grid.all_count = 200;
+        return 200;
+    } else if (command == "324") {
+        grid.all_count = 324;
+        return 324;
+    } else {
+        return -1;
+    }
+}
+
+
+int setGridColor(String command) {
+    if (command == "red") {
+        grid.color = CRGB::Red;
+        return 0;
+    } else if (command == "blue") {
+        grid.color = CRGB::Blue;
+        return 1;
+    } else if (command == "green") {
+        grid.color = CRGB::Green;
+        return 2;
+    } else if (command == "tungsten") {
+        grid.color = tungsten;
+        return 2;
     } else {
         return -1;
     }
