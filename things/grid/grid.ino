@@ -7,28 +7,41 @@ FASTLED_USING_NAMESPACE;
 
 CRGB leds[NUM_LEDS];
 
-CRGB colors[4] = {
-    CRGB::White,
-    CRGB::Red,
-    CRGB::Green,
-    CRGB::Blue
-    };
+CRGB colors[6] = {
+    CRGB(255,0,0),
+    CRGB(255,255,0),
+    CRGB(0,255,0),
+    CRGB(0,255,255),
+    CRGB(0,0,255),
+    CRGB(255,0,255)
+};
+
+class Led {
+
+public:
+
+    int idx;
+    CRGB color;
+
+    Led() {
+        color = CRGB::White;
+        idx = rand() % NUM_LEDS;
+    }
+};
 
 class Grid {
 
 public:
 
-    int redIdx;
-    int blueIdx;
-    int greenIdx;
+    Led pixels[6];
 
     int mode = 0;
 
     Grid() {
 
-        redIdx = rand() % NUM_LEDS;
-        greenIdx = rand() % NUM_LEDS;
-        blueIdx = rand() % NUM_LEDS;
+        for (int i=0; i<6; i++) {
+            pixels[i].color = colors[i];
+        }
     }
 
     void setMode(int x) {
@@ -38,24 +51,19 @@ public:
     void iterate() {
 
         if (mode == 0) {
-            // random walk of particle
-            //leds[idx] = color;
 
-            leds[redIdx] = CRGB::Red;
-            leds[greenIdx] = CRGB::Green;
-            leds[blueIdx] = CRGB::Blue;
+            for (int i=0; i<6; i++) {
+                leds[pixels[i].idx] = pixels[i].color;
+            }
 
             FastLED.show();
             delay(50);
 
-            leds[redIdx] = CRGB::Black;
-            leds[greenIdx] = CRGB::Black;
-            leds[blueIdx] = CRGB::Black;
+            for (int i=0; i<6; i++) {
+                leds[pixels[i].idx] = CRGB::Black;
 
-            redIdx = getNeighbor(redIdx);
-            greenIdx = getNeighbor(greenIdx);
-            blueIdx = getNeighbor(blueIdx);
-
+                pixels[i].idx = getNeighbor(pixels[i].idx);
+            }
         }
     }
 };
