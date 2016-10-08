@@ -2,7 +2,7 @@ import json
 import requests
 
 # load in configs
-with open('particle.json') as f:
+with open('config.json') as f:
     cfg = json.load(f)
 
 def post(device_name, function_name, command):
