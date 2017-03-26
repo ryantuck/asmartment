@@ -7,6 +7,10 @@
         "strip": {
             "name": "broton",
             "id": "2b0023000347343337373739"
+        },
+        "livingroom": {
+            "name": "livingroom",
+            "id": "35002d001247343339383037"
         }
     },
     "access_token": "26e4b7814fd17239de6b3c4fb0bbdb5f371284fc",
